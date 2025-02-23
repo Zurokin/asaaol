@@ -1,36 +1,43 @@
 class Character {
   constructor(baseAttack) {
-    this.baseAttack = baseAttack;
-    this.stoned = false;
+    this._baseAttack = baseAttack;
+    this._stoned = false;
+    this._distance = 1;
   }
 
   set stonedStatus(status) {
-    this.stoned = status;
+    this._stoned = status;
   }
 
   get stonedStatus() {
-    return this.stoned;
+    return this._stoned;
   }
 
-  getAttack(distance) {
-    let attack = this.baseAttack;
-    if (distance === 1) {
-      attack = this.baseAttack;
-    } else if (distance === 2) {
-      attack = this.baseAttack * 0.9;
-    } else if (distance === 3) {
-      attack = this.baseAttack * 0.8;
-    } else if (distance === 4) {
-      attack = this.baseAttack * 0.7;
-    } else {
-      attack = this.baseAttack * 0.6;
+  set attack(value) {
+    this._baseAttack = value;
+  }
+
+  get attack() {
+    let baseAttack = this._baseAttack * (1 - (this._distance - 1) * 0.1);
+
+    if (this._stoned) {
+      baseAttack -= Math.round(Math.log2(this._distance) * 5);
     }
 
-    if (this.stoned) {
-      attack -= Math.log2(distance) * 5;
-    }
+    baseAttack = Math.max(baseAttack, 0); // Не даем атаке уйти в минус
 
-    return attack;
+    baseAttack = Number(baseAttack.toFixed(2)); // Округление до двух знаков
+
+    console.log(`Distance: ${this._distance}, Attack: ${baseAttack}`);
+    return baseAttack;
+  }
+
+  set distance(value) {
+    this._distance = value;
+  }
+
+  get distance() {
+    return this._distance;
   }
 }
 
